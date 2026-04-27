@@ -1,73 +1,84 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import MagicuiPage from "@/templates/portfolios/magicui/app/page";
-import Navbar from "@/templates/portfolios/magicui/components/navbar";
-import { ThemeProvider } from "@/templates/portfolios/magicui/components/theme-provider";
-import { TooltipProvider } from "@/templates/portfolios/magicui/components/ui/tooltip";
-import { TemplateDataProvider } from "@/templates/portfolios/magicui/data/use-data";
-import { geist, geistMono } from "@/templates/portfolios/magicui/lib/fonts";
+import { useEffect, useRef } from "react";
+import {
+  PREVIEW_SOURCE,
+  isPreviewMessage,
+  type DataMessage,
+} from "@/lib/preview-protocol";
 import {
   MagicuiStoreProvider,
   useMagicuiStore,
 } from "@/providers/magicui-store-provider";
+import type { Data } from "@/templates/portfolios/magicui/data/schema";
+
+const PREVIEW_URL = "/preview/magicui";
 
 export default function BuilderMagicuiPage() {
   return (
     <MagicuiStoreProvider>
-      <Preview />
+      <Builder />
     </MagicuiStoreProvider>
   );
 }
 
-function Preview() {
+function Builder() {
   const data = useMagicuiStore((s) => s.data);
   const patch = useMagicuiStore((s) => s.patch);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  const sendData = (target: Window | null, payload: Data) => {
+    if (!target) return;
+    const message: DataMessage<Data> = {
+      source: PREVIEW_SOURCE,
+      type: "data",
+      payload,
+    };
+    target.postMessage(message, window.location.origin);
+  };
+
+  useEffect(() => {
+    sendData(iframeRef.current?.contentWindow ?? null, data);
+  }, [data]);
+
+  useEffect(() => {
+    const handler = (event: MessageEvent) => {
+      if (!isPreviewMessage(event.data)) return;
+      if (event.data.type === "ready") {
+        sendData(iframeRef.current?.contentWindow ?? null, data);
+      }
+    };
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, [data]);
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="light">
-      <TooltipProvider delayDuration={0}>
-        <TemplateDataProvider value={data}>
-          <div className={cn("font-sans", geist.variable, geistMono.variable)}>
-            <DebugPanel
-              currentName={data.name}
-              onMutate={() =>
-                patch("name", `Edited at ${new Date().toLocaleTimeString()}`)
-              }
-            />
-            <div className="relative max-w-2xl mx-auto py-12 pb-24 sm:py-24 px-6">
-              <MagicuiPage />
-            </div>
-            <Navbar />
-          </div>
-        </TemplateDataProvider>
-      </TooltipProvider>
-    </ThemeProvider>
-  );
-}
-
-function DebugPanel({
-  currentName,
-  onMutate,
-}: {
-  currentName: string;
-  onMutate: () => void;
-}) {
-  return (
-    <div className="border-b bg-muted px-6 py-3 flex items-center gap-3">
-      <span className="text-xs font-medium text-muted-foreground">
-        Phase 2 sanity check —
-      </span>
-      <button
-        type="button"
-        onClick={onMutate}
-        className="rounded bg-primary text-primary-foreground px-3 py-1 text-xs font-medium hover:opacity-90"
-      >
-        Mutate name
-      </button>
-      <span className="text-xs">
-        Current: <strong>{currentName}</strong>
-      </span>
+    <div className="flex h-screen">
+      <aside className="w-72 shrink-0 border-r p-4 overflow-y-auto bg-card">
+        <h2 className="text-sm font-semibold mb-3">Editor (sanity check)</h2>
+        <p className="text-xs text-muted-foreground mb-3">
+          Real sidebar comes later. For now, the button mutates the store and
+          posts an update to the iframe preview.
+        </p>
+        <button
+          type="button"
+          onClick={() =>
+            patch("name", `Edited at ${new Date().toLocaleTimeString()}`)
+          }
+          className="w-full rounded bg-primary text-primary-foreground px-3 py-1.5 text-xs font-medium hover:opacity-90"
+        >
+          Mutate name
+        </button>
+        <div className="mt-2 text-xs">
+          Current name: <strong>{data.name}</strong>
+        </div>
+      </aside>
+      <iframe
+        ref={iframeRef}
+        src={PREVIEW_URL}
+        title="Magicui preview"
+        className="flex-1 border-0"
+      />
     </div>
   );
 }
