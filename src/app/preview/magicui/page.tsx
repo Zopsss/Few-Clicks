@@ -1,22 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   PREVIEW_SOURCE,
   isPreviewMessage,
   type ReadyMessage,
 } from "@/lib/preview-protocol";
+import { useMagicuiStore } from "@/providers/magicui-store-provider";
 import MagicuiPage from "@/templates/portfolios/magicui/app/page";
 import Navbar from "@/templates/portfolios/magicui/components/navbar";
 import type { Data } from "@/templates/portfolios/magicui/data/schema";
 import { TemplateDataProvider } from "@/templates/portfolios/magicui/data/use-data";
 
 export default function PreviewMagicuiPage() {
-  const [data, setData] = useState<Data | null>(null);
+  const data = useMagicuiStore((s) => s.data);
+  const setData = useMagicuiStore((s) => s.setData);
 
   useEffect(() => {
     const handler = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
       if (!isPreviewMessage(event.data)) return;
+
       if (event.data.type === "data") {
         setData(event.data.payload as Data);
       }
@@ -27,7 +31,7 @@ export default function PreviewMagicuiPage() {
     window.parent.postMessage(ready, window.location.origin);
 
     return () => window.removeEventListener("message", handler);
-  }, []);
+  }, [setData]);
 
   return (
     <TemplateDataProvider value={data}>

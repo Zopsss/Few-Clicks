@@ -1,6 +1,12 @@
 "use client";
 
-import { type ReactNode, createContext, useState, useContext } from "react";
+import {
+  type ReactNode,
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+} from "react";
 import { useStore } from "zustand";
 
 import { type MagicuiStore, createMagicuiStore } from "@/stores/magicui-store";
@@ -19,6 +25,11 @@ export const MagicuiStoreProvider = ({
   children,
 }: MagicuiStoreProviderProps) => {
   const [store] = useState(() => createMagicuiStore());
+
+  useEffect(() => {
+    store.persist.rehydrate();
+  }, [store]);
+
   return (
     <MagicuiStoreContext.Provider value={store}>
       {children}
