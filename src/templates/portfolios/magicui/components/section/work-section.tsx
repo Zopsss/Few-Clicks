@@ -2,7 +2,6 @@
 "use client";
 import { useState } from "react";
 import { ArrowUpRight, ChevronDown, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
 import {
   Accordion,
   AccordionContent,
@@ -10,7 +9,7 @@ import {
   AccordionTrigger,
 } from "../ui/accordion";
 import { useData } from "../../data/use-data";
-import { isValidUrl } from "../../lib/utils";
+import { isValidUrl, cn } from "../../lib/utils";
 
 function LogoImage({ src, alt }: { src: string; alt: string }) {
   const [imageError, setImageError] = useState(false);

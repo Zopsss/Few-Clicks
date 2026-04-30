@@ -9,8 +9,8 @@ import {
 import { useMagicuiStore } from "@/providers/magicui-store-provider";
 import MagicuiPage from "@/templates/portfolios/magicui/app/page";
 import Navbar from "@/templates/portfolios/magicui/components/navbar";
-import type { Data } from "@/templates/portfolios/magicui/data/schema";
 import { TemplateDataProvider } from "@/templates/portfolios/magicui/data/use-data";
+import { DataSchema } from "@/templates/portfolios/magicui/data/schema";
 
 export default function PreviewMagicuiPage() {
   const data = useMagicuiStore((s) => s.data);
@@ -22,7 +22,9 @@ export default function PreviewMagicuiPage() {
       if (!isPreviewMessage(event.data)) return;
 
       if (event.data.type === "data") {
-        setData(event.data.payload as Data);
+        const parsed = DataSchema.safeParse(event.data.payload);
+        if (!parsed.success) return;
+        setData(parsed.data);
       }
     };
     window.addEventListener("message", handler);
