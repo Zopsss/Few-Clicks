@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { cn } from "@/lib/utils";
+import { cn } from "../lib/utils";
 import { MoonIcon, SunIcon } from "lucide-react";
 import { Button } from "./ui/button";
 

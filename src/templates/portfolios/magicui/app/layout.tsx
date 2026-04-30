@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "../lib/utils";
 import type { Metadata } from "next";
 import "./globals.css";
 import { DATA } from "../data/data";
