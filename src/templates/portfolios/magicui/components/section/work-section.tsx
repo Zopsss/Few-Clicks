@@ -2,7 +2,7 @@
 "use client";
 import { useState } from "react";
 import { ArrowUpRight, ChevronDown, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "../../lib/utils";
 import {
   Accordion,
   AccordionContent,
