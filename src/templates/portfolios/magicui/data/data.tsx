@@ -70,7 +70,6 @@ export const DATA = {
     {
       company: "Atomic Finance",
       href: "https://atomic.finance",
-      badges: [],
       location: "Remote",
       title: "Bitcoin Protocol Engineer",
       logoUrl: "",
@@ -81,7 +80,6 @@ export const DATA = {
     },
     {
       company: "Shopify",
-      badges: [],
       href: "https://shopify.com",
       location: "Remote",
       title: "Software Engineer",
@@ -94,7 +92,6 @@ export const DATA = {
     {
       company: "Nvidia",
       href: "https://nvidia.com/",
-      badges: [],
       location: "Santa Clara, CA",
       title: "Software Engineer",
       logoUrl: "",
@@ -106,7 +103,6 @@ export const DATA = {
     {
       company: "Splunk",
       href: "https://splunk.com",
-      badges: [],
       location: "San Jose, CA",
       title: "Software Engineer",
       logoUrl: "",
@@ -118,7 +114,6 @@ export const DATA = {
     {
       company: "Lime",
       href: "https://li.me/",
-      badges: [],
       location: "San Francisco, CA",
       title: "Software Engineer",
       logoUrl: "",
@@ -130,7 +125,6 @@ export const DATA = {
     {
       company: "Mitre Media",
       href: "https://mitremedia.com/",
-      badges: [],
       location: "Toronto, ON",
       title: "Software Engineer",
       logoUrl: "",

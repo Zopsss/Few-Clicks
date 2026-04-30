@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { useState } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ArrowUpRight, ChevronDown, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Accordion,
@@ -10,6 +10,7 @@ import {
   AccordionTrigger,
 } from "../ui/accordion";
 import { useData } from "../../data/use-data";
+import { isValidUrl } from "../../lib/utils";
 
 function LogoImage({ src, alt }: { src: string; alt: string }) {
   const [imageError, setImageError] = useState(false);
@@ -43,7 +44,7 @@ export default function WorkSection() {
           <AccordionTrigger className="hover:no-underline p-0 cursor-pointer transition-colors rounded-none group [&>svg]:hidden">
             <div className="flex items-center gap-x-3 justify-between w-full text-left">
               <div className="flex items-center gap-x-3 flex-1 min-w-0">
-                <LogoImage src={""} alt={work.company} />
+                <LogoImage src={work.logoUrl} alt={work.company} />
                 <div className="flex-1 min-w-0 gap-0.5 flex flex-col">
                   <div className="font-semibold leading-none flex items-center gap-2">
                     {work.company}
@@ -70,15 +71,29 @@ export default function WorkSection() {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-1 text-xs tabular-nums text-muted-foreground text-right flex-none">
-                <span>
+              <div className="flex flex-col items-end gap-0.5 text-xs text-muted-foreground text-right flex-none">
+                <span className="tabular-nums">
                   {work.start} - {work.end ?? "Present"}
                 </span>
+                {work.location && <span>{work.location}</span>}
               </div>
             </div>
           </AccordionTrigger>
           <AccordionContent className="p-0 ml-13 text-xs sm:text-sm text-muted-foreground">
-            {work.description}
+            <div className="flex flex-col gap-2">
+              <p>{work.description}</p>
+              {isValidUrl(work.href) && (
+                <a
+                  href={work.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs text-foreground hover:underline w-fit"
+                >
+                  Visit website
+                  <ArrowUpRight className="size-3" />
+                </a>
+              )}
+            </div>
           </AccordionContent>
         </AccordionItem>
       ))}

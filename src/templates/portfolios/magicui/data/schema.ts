@@ -38,7 +38,6 @@ const ContactSchema = z.object({
 const WorkSchema = z.object({
   company: z.string(),
   href: z.string(),
-  badges: z.array(z.string()),
   location: z.string(),
   title: z.string(),
   logoUrl: z.string(),
